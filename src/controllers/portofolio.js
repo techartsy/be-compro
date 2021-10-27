@@ -140,7 +140,9 @@ exports.addPortofolio = async (req, res) => {
     let portofolio = {
       ...data,
     };
-    let withFiles;
+    let withFiles = {
+      ...data,
+    };
 
     if (req.files) {
       req.files.map((item) => {

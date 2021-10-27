@@ -57,7 +57,7 @@ exports.portofolioId = async (req, res) => {
         message: `Portofolio with id ${id} in Table not Found`,
       });
     }
-    // portofolio = JSON.parse(JSON.stringify(portofolio));
+    portofolio = JSON.parse(JSON.stringify(portofolio));
     portofolio = {
       ...portofolio,
       mainimage: portofolio.mainimage

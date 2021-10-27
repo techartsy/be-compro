@@ -215,7 +215,6 @@ exports.deleteService = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).send({
       status: "Failed",
       messgae: "Internal Server Error",

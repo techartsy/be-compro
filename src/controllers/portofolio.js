@@ -13,9 +13,10 @@ exports.portofolios = async (req, res) => {
     allPortofolios = allPortofolios?.map((item) => {
       return {
         ...item,
-        mainimage: "http://localhost:4000/uploads/" + item.mainimage,
-        secondimage: "http://localhost:4000/uploads/" + item.secondimage,
-        image: "http://localhost:4000/uploads/" + item.image,
+        mainimage: "https://be-compro.herokuapp.com/uploads/" + item.mainimage,
+        secondimage:
+          "https://be-compro.herokuapp.com/uploads/" + item.secondimage,
+        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
       };
     });
 
@@ -48,9 +49,11 @@ exports.portofolioId = async (req, res) => {
     portofolios = JSON.parse(JSON.stringify(portofolios));
     portofolios = {
       ...portofolios,
-      mainimage: "http://localhost:4000/uploads/" + portofolios.mainimage, // sebelum intergrasi ganti link nya
-      secondimage: "http://localhost:4000/uploads/" + portofolios.secondimage, // sebelum intergrasi ganti link nya
-      image: "http://localhost:4000/uploads/" + portofolios.image, // sebelum intergrasi ganti link nya
+      mainimage:
+        "https://be-compro.herokuapp.com/uploads/" + portofolios.mainimage, // sebelum intergrasi ganti link nya
+      secondimage:
+        "https://be-compro.herokuapp.com/uploads/" + portofolios.secondimage, // sebelum intergrasi ganti link nya
+      image: "https://be-compro.herokuapp.com/uploads/" + portofolios.image, // sebelum intergrasi ganti link nya
     };
 
     if (!portofolios) {
@@ -89,9 +92,9 @@ exports.categoryPortofolio = async (req, res) => {
     portofolios = portofolios?.map((item) => {
       return {
         ...item,
-        mainimage: "http://localhost:4000/uploads/" + item.image,
-        secondimage: "http://localhost:4000/uploads/" + item.image,
-        image: "http://localhost:4000/uploads/" + item.image,
+        mainimage: "https://be-compro.herokuapp.com/uploads/" + item.image,
+        secondimage: "https://be-compro.herokuapp.com/uploads/" + item.image,
+        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
       };
     });
 
@@ -108,7 +111,6 @@ exports.categoryPortofolio = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send({
       status: "Failed",
       message: "Internal Server Error",

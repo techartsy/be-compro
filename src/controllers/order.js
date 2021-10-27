@@ -1,25 +1,25 @@
-const { Order } = require('../../models');
-const nodemailer = require('nodemailer');
-const except = ['createdAt', 'updatedAt'];
+const { Order } = require("../../models");
+const nodemailer = require("nodemailer");
+const except = ["createdAt", "updatedAt"];
 
 //=Order Get All=\\
 exports.getOrders = async (req, res) => {
   try {
     let allOrders = await Order.findAll({
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     res.status(200).send({
-      status: 'Success',
-      allOrders
+      status: "Success",
+      allOrders,
     });
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=Get Order by id=\\
@@ -28,32 +28,31 @@ exports.getOrder = async (req, res) => {
     const { id } = req.params;
     let order = await Order.findOne({
       where: {
-        id: id
+        id: id,
       },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
 
     if (!order) {
       return res.status(404).send({
-        status: 'Failed',
-        message: 'Order not Found'
+        status: "Failed",
+        message: "Order not Found",
       });
-    };
+    }
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        order
-      }
+        order,
+      },
     });
-
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=add Order=\\
@@ -61,64 +60,63 @@ exports.addOrder = async (req, res) => {
   try {
     let data = req.body;
     await Order.create({
-      ...data
+      ...data,
     });
 
     let orderData = await Order.findOne({
       where: {
-        ...data
+        ...data,
       },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
 
     res.status(201).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        order: orderData
-      }
+        order: orderData,
+      },
     });
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Sevre Error'
+      status: "Failed",
+      message: "Internal Sevre Error",
     });
-  };
+  }
 };
 
 //=send email=\\
 exports.sendEmail = (email) => {
   let transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
-      user: 'techartsy.indonesia@gmail.com',
-      pass: 'lintingdewe'
-    }
+      user: "techartsy.indonesia@gmail.com",
+      pass: "lintingdewe",
+    },
   });
 
   let mailOptions = {
-    from: 'techartsy.indonesia@gmail.com',
+    from: "techartsy.indonesia@gmail.com",
     to: email,
-    subject: 'email has been delivered',
-    text: 'email from back end',
+    subject: "email has been delivered",
+    text: "email from back end",
     attachments: [
       {
-        filename: 'QuotationWebDevelopmentTechartsy.pdf',
-        path: './assets/QuotationWebDevelopmentTechartsy.pdf'
-      }
-    ]
-  }
+        filename: "QuotationWebDevelopmentTechartsy.pdf",
+        path: "./assets/QuotationWebDevelopmentTechartsy.pdf",
+      },
+    ],
+  };
 
   transporter.sendMail(mailOptions, function (err, data) {
     if (err) {
-      console.log(err, 'error');
+      console.log(err, "error");
     } else {
-      console.log('email sent!');
+      console.log("email sent!");
     }
   });
-}
+};
 
 //=edit Order=\\
 exports.responseOrder = async (req, res) => {
@@ -129,26 +127,25 @@ exports.responseOrder = async (req, res) => {
 
     if (!orderCheck) {
       return res.status(404).send({
-        status: 'Failed',
-        message: `Order with id ${id} not Found`
+        status: "Failed",
+        message: `Order with id ${id} not Found`,
       });
-    };
+    }
     const dataUpdate = {
       ...body,
-    }
-    await Order.update(dataUpdate,
-      {
-        where: {
-          id
-        }
-      });
+    };
+    await Order.update(dataUpdate, {
+      where: {
+        id,
+      },
+    });
 
-    if (body.status.toLowerCase() === 'confirm') {
-      this.sendEmail(orderCheck.email)
+    if (body.status.toLowerCase() === "confirm") {
+      this.sendEmail(orderCheck.email);
     }
 
     res.status(201).send({
-      status: 'Success',
+      status: "Success",
       data: {
         order: {
           id: dataUpdate.id,
@@ -157,17 +154,16 @@ exports.responseOrder = async (req, res) => {
           phone: dataUpdate.phone,
           subject: dataUpdate.subject,
           message: dataUpdate.message,
-          status: dataUpdate.status
-        }
-      }
+          status: dataUpdate.status,
+        },
+      },
     });
   } catch (error) {
-    console.log(error, 'err...................................')
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=delete Order=\\
@@ -176,29 +172,28 @@ exports.deleteOrder = async (req, res) => {
     const { id } = req.params;
     const order = await Order.findOne({
       where: { id },
-      attributes: except
+      attributes: except,
     });
 
     if (!order) {
       return res.status(404).send({
-        status: 'Failed',
+        status: "Failed",
         message: `Order with id ${id} not Found`,
-        data: []
-      })
+        data: [],
+      });
     }
-    await Order.destroy({ where: { id } })
+    await Order.destroy({ where: { id } });
 
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        id
-      }
+        id,
+      },
     });
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      messsage: 'Internal Serve Error'
+      status: "Failed",
+      messsage: "Internal Serve Error",
     });
-  };
+  }
 };

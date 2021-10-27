@@ -1,12 +1,12 @@
-const multer = require('multer');
+const multer = require("multer");
 
 exports.uploadFile = (imageFile, categoryFile) => {
   const storage = multer.diskStorage({
     destination: function (req, res, cb) {
-      cb(null, 'uploads')
+      cb(null, "uploads");
     },
     filename: function (req, file, cb) {
-      cb(null, `${Date.now()}-${file.originalname.replace(/\s/g, '')}`);
+      cb(null, `${Date.now()}-${file.originalname.replace(/\s/g, "")}`);
     },
   });
 
@@ -14,43 +14,35 @@ exports.uploadFile = (imageFile, categoryFile) => {
     if (file.fieldname === imageFile) {
       if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
         req.fileValidationError = {
-          message: 'Only image filed are allowed!'
-        }
+          message: "Only image filed are allowed!",
+        };
 
-        return cb(new Error('only image files are allowed'), false)
+        return cb(new Error("only image files are allowed"), false);
       }
     }
-    cb(null, true)
-  }
+    cb(null, true);
+  };
 
   const sizeInMB = 10;
   const maxSize = sizeInMB * 1000 * 1000;
 
   // generate multer instance for upload
 
-  // const upload = multer({
-  //   storage,
-  //   fileFilter,
-  //   limits: {
-  //     fileSize: maxSize
-  //   },
-  // }).single(imageFile);
-
   let upload;
-  if (categoryFile === 'portofolio') {
+  if (categoryFile === "portofolio") {
     upload = multer({
       storage,
       fileFilter,
       limits: {
-        fileSize: maxSize
+        fileSize: maxSize,
       },
     }).any(imageFile);
-  } else if (categoryFile === 'layanan') {
+  } else if (categoryFile === "layanan") {
     upload = multer({
       storage,
       fileFilter,
       limits: {
-        fileSize: maxSize
+        fileSize: maxSize,
       },
     }).single(imageFile);
   } else {
@@ -58,7 +50,7 @@ exports.uploadFile = (imageFile, categoryFile) => {
       storage,
       fileFilter,
       limits: {
-        fileSize: maxSize
+        fileSize: maxSize,
       },
     }).single(imageFile);
   }
@@ -68,17 +60,11 @@ exports.uploadFile = (imageFile, categoryFile) => {
       if (req.fileValidationError) {
         return res.status(400).send(req.fileValidationError);
       }
-      // console.log(req.file, 'reqfile multer nih>>>>>>>>>>>>>>')
-      // if (!req.file && !err) {
-      //   return res.status(400).send({
-      //     message: 'Please Select Files to Upload',
-      //   });
-      // }
 
       if (err) {
-        if (err.code === 'LIMIT_FILE_SIZE') {
+        if (err.code === "LIMIT_FILE_SIZE") {
           return res.status(400).send({
-            message: 'Max File Size in 10MB',
+            message: "Max File Size in 10MB",
           });
         }
         return res.status(400).send(err);

@@ -10,8 +10,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 // app.use("/uploads", express.static("uploads"));
-app.use(express.static("../uploads"));
-app.use(express.static(path.join(__dirname, "uploads")));
+// app.use(express.static("../uploads"));
+// app.use(express.static(path.join(__dirname, "uploads")));
+process.env.PWD = process.cwd();
+app.use(express.static(path.join(process.env.PWD, "public")));
 app.use("/app/v1/techartsy", router);
 app.get("/", (err, res) => {
   res.send("Server Run");

@@ -15,7 +15,7 @@ exports.services = async (req, res) => {
     allLayanans = allLayanans?.map((item) => {
       return {
         ...item,
-        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
+        image: "https://be-compro.herokuapp.com/public/" + item.image,
       }; // sebelum intergrasi ganti link nya
     });
 

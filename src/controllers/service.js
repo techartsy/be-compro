@@ -151,13 +151,15 @@ exports.editService = async (req, res) => {
         message: `Layanan with id ${id} not Found`,
       });
     }
-    const dataUpdate = {
-      ...body,
-    };
-    if (req.file) {
+    const dataUpdate;
+    if (req?.file) {
       dataUpdate = {
         ...body,
         image: req.file.filename,
+      };
+    } else {
+      dataUpdate = {
+        ...body,
       };
     }
     await Layanan.update(dataUpdate, {

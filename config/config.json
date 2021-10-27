@@ -19,7 +19,7 @@
     "database": "daiogb3f4kqird",
     "host": "ec2-176-34-116-203.eu-west-1.compute.amazonaws.com",
     "dialect": "postgres",
-    "operatorsAliases": false,
+    "operatorsAliases": 0,
     "use_env_variable": "DATABASE_URL"
   }
 }

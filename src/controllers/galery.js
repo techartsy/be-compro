@@ -13,7 +13,9 @@ exports.galleries = async (req, res) => {
     allItems = allItems.map((item) => {
       return {
         ...item,
-        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
+        image: item.image
+          ? "https://be-compro.herokuapp.com/uploads/" + item.image
+          : item.image,
       };
     });
 
@@ -46,7 +48,9 @@ exports.galleryId = async (req, res) => {
     galleries = JSON.parse(JSON.stringify(galleries));
     galleries = {
       ...galleries,
-      image: "https://be-compro.herokuapp.com/uploads/" + galleries.image, // sebelum intergrasi ganti link nya
+      image: galleries.image
+        ? "https://be-compro.herokuapp.com/uploads/" + galleries.image
+        : galleries.image, // sebelum intergrasi ganti link nya
     };
 
     if (!galleries) {
@@ -85,7 +89,9 @@ exports.galleryCategory = async (req, res) => {
     galleries = galleries?.map((item) => {
       return {
         ...item,
-        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
+        image: item.image
+          ? "https://be-compro.herokuapp.com/uploads/" + item.image
+          : item.image,
       };
     });
 

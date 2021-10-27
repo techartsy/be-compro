@@ -125,12 +125,13 @@ exports.addPortofolio = async (req, res) => {
     let portofolio = {
       ...data,
     };
-    req.files.map((item) => {
-      portofolio = {
-        ...portofolio,
-        [item.fieldname]: item.filename,
-      };
-    });
+    req?.files &&
+      req.files.map((item) => {
+        portofolio = {
+          ...portofolio,
+          [item.fieldname]: item.filename,
+        };
+      });
     await Portofolio.create(portofolio);
 
     res.status(201).send({

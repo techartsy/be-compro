@@ -9,13 +9,6 @@ var path = require("path");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-// app.use(express.static("../uploads"));
-// console.log(__dirname, "<< dirname");
-// app.use(express.static(path.join(__dirname, "/public")));
-// process.env.PWD = process.cwd();
-// app.use(express.static(path.join(process.env.PWD, "public")));
-// app.use('/static', express.static(__dirname + '/public'));
-// app.use(express.static(__dirname + "../public"));
 app.use("/app/v1/techartsy", router);
 app.use("/uploads", express.static("uploads"));
 app.get("/", (err, res) => {
@@ -23,3 +16,4 @@ app.get("/", (err, res) => {
 });
 
 app.listen(port, () => console.log(`Server Starts on ${port}!`));
+s;

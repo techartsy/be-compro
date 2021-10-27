@@ -1,11 +1,9 @@
 const multer = require("multer");
-const path = require("path");
 
 exports.uploadFile = (imageFile, categoryFile) => {
   const storage = multer.diskStorage({
     destination: function (req, res, cb) {
-      // cb(null, "app/uploads");
-      cb(null, path.resolve(__dirname, "build"));
+      cb(null, "uploads");
     },
     filename: function (req, file, cb) {
       cb(null, `${Date.now()}-${file.originalname.replace(/\s/g, "")}`);

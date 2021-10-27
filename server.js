@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-// const nodemailer = require('nodemailer');
 
 const app = express();
 const router = require("./src/routes");

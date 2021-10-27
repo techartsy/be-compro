@@ -1,3 +1,4 @@
+const e = require("express");
 const { Layanan } = require("../../models");
 const except = ["createdAt", "updatedAt"];
 // const joi = require('joi');
@@ -152,8 +153,13 @@ exports.editService = async (req, res) => {
     }
     const dataUpdate = {
       ...body,
-      image: req.file.filename,
     };
+    if (req.file) {
+      dataUpdate = {
+        ...body,
+        image: req.file.filename,
+      };
+    }
     await Layanan.update(dataUpdate, {
       where: {
         id,
@@ -173,7 +179,9 @@ exports.editService = async (req, res) => {
       data: {
         service: {
           id: serviceUpdate.id,
-          image: serviceUpdate.image,
+          image: serviceUpdate.image
+            ? "https://be-compro.herokuapp.com/uploads/" + serviceUpdate.image
+            : serviceUpdate.image,
           title: serviceUpdate.title,
           description: serviceUpdate.description,
           category: serviceUpdate.category,
@@ -219,5 +227,5 @@ exports.deleteService = async (req, res) => {
       status: "Failed",
       messgae: "Internal Server Error",
     });
-  };
+  }
 };

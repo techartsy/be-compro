@@ -11,5 +11,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/app/v1/techartsy', router);
 app.use('/uploads', express.static('uploads'));
+app.get('/', (err, res) => {
+  res.send('Server Run')
+})
 
 app.listen(port, () => console.log(`Server Starts on ${port}!`));

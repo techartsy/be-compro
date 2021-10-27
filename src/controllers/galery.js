@@ -158,10 +158,17 @@ exports.editGallery = async (req, res) => {
         message: `Item with id ${id} not Found`,
       });
     }
-    const dataUpdate = {
-      ...body,
-      image: req.file,
-    };
+    let dataUpdate;
+    if (req?.file) {
+      dataUpdate = {
+        ...body,
+        image: req.file.filename,
+      };
+    } else {
+      dataUpdate = {
+        ...body,
+      };
+    }
     await Gallery.update(dataUpdate, {
       where: {
         id,

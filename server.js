@@ -17,7 +17,7 @@ app.use(cors());
 // app.use('/static', express.static(__dirname + '/public'));
 // app.use(express.static(__dirname + "../public"));
 app.use("/app/v1/techartsy", router);
-app.use("/public", express.static("public"));
+app.use("/uploads", express.static("uploads"));
 app.get("/", (err, res) => {
   res.send("Server Run");
 });

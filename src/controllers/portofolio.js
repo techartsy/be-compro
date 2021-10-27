@@ -1,39 +1,36 @@
-const { Portofolio } = require('../../models/');
-const except = ['createdAt', 'updatedAt'];
+const { Portofolio } = require("../../models/");
+const except = ["createdAt", "updatedAt"];
 
 //=Get All Portofolio=\\
 exports.portofolios = async (req, res) => {
   try {
     let allPortofolios = await Portofolio.findAll({
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     allPortofolios = JSON.parse(JSON.stringify(allPortofolios));
     allPortofolios = allPortofolios?.map((item) => {
       return {
         ...item,
-        mainimage: 'http://localhost:4000/uploads/' + item.mainimage,
-        secondimage: 'http://localhost:4000/' + item.secondimage,
-        image: 'http://localhost:4000/uploads/' + item.image
+        mainimage: "http://localhost:4000/uploads/" + item.mainimage,
+        secondimage: "http://localhost:4000/uploads/" + item.secondimage,
+        image: "http://localhost:4000/uploads/" + item.image,
       };
     });
 
-
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        portofolio:
-          allPortofolios
-      }
+        portofolio: allPortofolios,
+      },
     });
-
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=Get Portofolio by id=\\
@@ -42,39 +39,38 @@ exports.portofolioId = async (req, res) => {
     const { id } = req.params;
     let portofolios = await Portofolio.findOne({
       where: {
-        id: id
+        id: id,
       },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     portofolios = JSON.parse(JSON.stringify(portofolios));
     portofolios = {
       ...portofolios,
-      mainimage: 'http://localhost:4000/uploads/' + portofolios.mainimage, // sebelum intergrasi ganti link nya
-      secondimage: 'http://localhost:4000/uploads/' + portofolios.secondimage,// sebelum intergrasi ganti link nya
-      image: 'http://localhost:4000/uploads/' + portofolios.image // sebelum intergrasi ganti link nya
+      mainimage: "http://localhost:4000/uploads/" + portofolios.mainimage, // sebelum intergrasi ganti link nya
+      secondimage: "http://localhost:4000/uploads/" + portofolios.secondimage, // sebelum intergrasi ganti link nya
+      image: "http://localhost:4000/uploads/" + portofolios.image, // sebelum intergrasi ganti link nya
     };
 
     if (!portofolios) {
       return res.status(404).send({
-        status: 'Failed',
-        message: `Portofolio with id ${id} in Table not Found`
+        status: "Failed",
+        message: `Portofolio with id ${id} in Table not Found`,
       });
-    };
+    }
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        portofolios
-      }
+        portofolios,
+      },
     });
-
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=Get Portofolio by category=\\
@@ -83,42 +79,41 @@ exports.categoryPortofolio = async (req, res) => {
     const { category } = req.params;
     let portofolios = await Portofolio.findAll({
       where: {
-        category: category
+        category: category,
       },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     portofolios = JSON.parse(JSON.stringify(portofolios));
     portofolios = portofolios?.map((item) => {
       return {
         ...item,
-        mainimage: 'http://localhost:4000/uploads/' + item.image,
-        secondimage: 'http://localhost:4000/uploads/' + item.image,
-        image: 'http://localhost:4000/uploads/' + item.image
+        mainimage: "http://localhost:4000/uploads/" + item.image,
+        secondimage: "http://localhost:4000/uploads/" + item.image,
+        image: "http://localhost:4000/uploads/" + item.image,
       };
     });
 
     if (!portofolios) {
       return res.status(404).send({
-        status: 'Failed',
-        message: `Category ${category} not Found`
+        status: "Failed",
+        message: `Category ${category} not Found`,
       });
-    };
+    }
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        portofolios
-      }
+        portofolios,
+      },
     });
-
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=add Portofolio=\\ TOKEN
@@ -127,32 +122,29 @@ exports.addPortofolio = async (req, res) => {
     let data = req.body;
     let portofolio = {
       ...data,
-    }
+    };
     req.files.map((item) => {
       portofolio = {
         ...portofolio,
-        [item.fieldname]: item.filename
-      }
-    })
-    await Portofolio.create(
-      portofolio
-    );
+        [item.fieldname]: item.filename,
+      };
+    });
+    await Portofolio.create(portofolio);
 
     res.status(201).send({
-      status: 'Success',
+      status: "Success",
       data: {
         portofolio: {
-          ...portofolio
-        }
-      }
+          ...portofolio,
+        },
+      },
     });
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=edit Portofolio=\\ TOKEN
@@ -161,43 +153,42 @@ exports.editPortofolio = async (req, res) => {
     const { id } = req.params;
     const { body } = req;
     let portofolioCheck = await Portofolio.findOne({
-      where: { id }
+      where: { id },
     });
 
     if (!portofolioCheck) {
       return res.status(404).send({
-        status: 'Failed',
-        message: `Portofolio with id ${id} not Found`
+        status: "Failed",
+        message: `Portofolio with id ${id} not Found`,
       });
-    };
+    }
     dataUpdate = {
       ...body,
-      image: req.files
+      image: req.files,
     };
     req.files.map((item) => {
       dataUpdate = {
         ...dataUpdate,
-        [item.fieldname]: item.filename
-      }
-    })
+        [item.fieldname]: item.filename,
+      };
+    });
 
-    await Portofolio.update(dataUpdate,
-      {
-        where: {
-          id
-        },
-      });
+    await Portofolio.update(dataUpdate, {
+      where: {
+        id,
+      },
+    });
     const portofolioUpdate = await Portofolio.findOne({
       attributes: {
-        exclude: except
+        exclude: except,
       },
       where: {
-        id
-      }
+        id,
+      },
     });
 
     res.status(201).send({
-      status: 'Success',
+      status: "Success",
       portofolio: {
         id: portofolioUpdate.id,
         mainimage: portofolioUpdate.mainimage,
@@ -205,16 +196,15 @@ exports.editPortofolio = async (req, res) => {
         title: portofolioUpdate.title,
         description: portofolioUpdate.description,
         category: portofolioUpdate.category,
-        thumbnail: portofolioUpdate.thumbnail
-      }
+        thumbnail: portofolioUpdate.thumbnail,
+      },
     });
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=delete Portofolio=\\ TOKEN
@@ -224,30 +214,29 @@ exports.deletePortofolio = async (req, res) => {
     const portofolio = await Portofolio.findOne({
       where: { id },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
 
     if (!portofolio) {
       return res.status(404).send({
-        status: 'Failed',
+        status: "Failed",
         message: `Portofolio with id ${id} not Found`,
-        data: []
+        data: [],
       });
     }
-    await Portofolio.destroy({ where: { id } })
+    await Portofolio.destroy({ where: { id } });
 
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        id
-      }
+        id,
+      },
     });
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Interna; Server Error'
+      status: "Failed",
+      message: "Interna; Server Error",
     });
-  };
+  }
 };

@@ -1,71 +1,72 @@
-const { Gallery } = require('../../models');
-const except = ['createdAt', 'updatedAt'];
+const { Gallery } = require("../../models");
+const except = ["createdAt", "updatedAt"];
 
 //=Get All Gallery=\\
 exports.galleries = async (req, res) => {
   try {
     let allItems = await Gallery.findAll({
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     allItems = JSON.parse(JSON.stringify(allItems));
     allItems = allItems.map((item) => {
-      return { ...item, image: 'http://localhost:4000/uploads/' + item.image };
+      return {
+        ...item,
+        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
+      };
     });
 
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        gallery:
-          allItems
-      }
+        gallery: allItems,
+      },
     });
-
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=Get Gallery by id=\\
 exports.galleryId = async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
     let galleries = await Gallery.findOne({
       where: {
-        id: id
+        id: id,
       },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     galleries = JSON.parse(JSON.stringify(galleries));
     galleries = {
-      ...galleries, image: 'http://localhost:4000/uploads/' + galleries.image // sebelum intergrasi ganti link nya
+      ...galleries,
+      image: "https://be-compro.herokuapp.com/uploads/" + galleries.image, // sebelum intergrasi ganti link nya
     };
 
     if (!galleries) {
       return res.status(404).send({
-        status: 'Failed',
-        message: `Item with id ${id} in Gallery not found`
+        status: "Failed",
+        message: `Item with id ${id} in Gallery not found`,
       });
-    };
+    }
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        galleries
-      }
+        galleries,
+      },
     });
-
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=Get Item Gallery by Category=\\
@@ -74,36 +75,38 @@ exports.galleryCategory = async (req, res) => {
     const { category } = req.params;
     let galleries = await Gallery.findAll({
       where: {
-        category: category
+        category: category,
       },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     galleries = JSON.parse(JSON.stringify(galleries));
     galleries = galleries?.map((item) => {
-      return { ...item, image: 'http://localhost:4000/uploads/' + item.image };
+      return {
+        ...item,
+        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
+      };
     });
 
     if (!galleries) {
       return res.status(404).send({
-        status: 'Failed',
-        message: `Category ${category} not Found`
+        status: "Failed",
+        message: `Category ${category} not Found`,
       });
-    };
+    }
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        galleries
-      }
+        galleries,
+      },
     });
-
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=add Gallery=\\
@@ -113,33 +116,32 @@ exports.addItemGallery = async (req, res) => {
     if (req.file) {
       await Gallery.create({
         ...data,
-        image: req.file.filename
+        image: req.file.filename,
       });
       res.status(201).send({
-        status: 'Success',
+        status: "Success",
         data: {
-          gallery: { ...data, image: req.file.filename }
-        }
+          gallery: { ...data, image: req.file.filename },
+        },
       });
     } else {
       await Gallery.create({
         ...data,
-      })
+      });
       res.status(201).send({
-        status: 'Success',
+        status: "Success",
         data: {
-          gallery: { ...data }
-        }
+          gallery: { ...data },
+        },
       });
     }
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
-    })
+      status: "Failed",
+      message: "Internal Server Error",
+    });
   }
-}
+};
 
 //=edit Gallery=\\ TOKEN
 exports.editGallery = async (req, res) => {
@@ -147,37 +149,36 @@ exports.editGallery = async (req, res) => {
     const { id } = req.params;
     const { body } = req;
     let galleryCheck = await Gallery.findOne({
-      where: { id }
+      where: { id },
     });
 
     if (!galleryCheck) {
       return res.status(404).send({
-        status: 'Failed',
-        message: `Item with id ${id} not Found`
+        status: "Failed",
+        message: `Item with id ${id} not Found`,
       });
-    };
+    }
     const dataUpdate = {
       ...body,
-      image: req.file
+      image: req.file,
     };
-    await Gallery.update(dataUpdate,
-      {
-        where: {
-          id
-        },
-      });
+    await Gallery.update(dataUpdate, {
+      where: {
+        id,
+      },
+    });
 
     const galleryUpdate = await Gallery.findOne({
       attributes: {
-        exclude: except
+        exclude: except,
       },
       where: {
-        id
-      }
+        id,
+      },
     });
 
     res.status(201).send({
-      status: 'Success',
+      status: "Success",
       data: {
         gallery: {
           id: galleryUpdate.id,
@@ -185,17 +186,16 @@ exports.editGallery = async (req, res) => {
           image: galleryUpdate.image,
           video: galleryUpdate.video,
           caption: galleryUpdate.caption,
-          category: galleryUpdate.category
-        }
-      }
+          category: galleryUpdate.category,
+        },
+      },
     });
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=delete Gallery=\\ TOKEN
@@ -205,32 +205,31 @@ exports.deleteGallery = async (req, res) => {
     const gallery = await Gallery.findOne({
       where: { id },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
 
     if (!gallery) {
       return res.status(404).send({
-        status: 'Failed',
+        status: "Failed",
         message: `Item with id ${id} not Found`,
-        data: []
+        data: [],
       });
     }
     await Gallery.destroy({
-      where: { id }
+      where: { id },
     });
 
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        id
-      }
+        id,
+      },
     });
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };

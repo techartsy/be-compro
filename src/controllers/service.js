@@ -1,5 +1,5 @@
-const { Layanan } = require('../../models');
-const except = ['createdAt', 'updatedAt'];
+const { Layanan } = require("../../models");
+const except = ["createdAt", "updatedAt"];
 // const joi = require('joi');
 
 //=Get All Layanans=\\
@@ -7,66 +7,67 @@ exports.services = async (req, res) => {
   try {
     let allLayanans = await Layanan.findAll({
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     allLayanans = JSON.parse(JSON.stringify(allLayanans));
     allLayanans = allLayanans?.map((item) => {
-      return { ...item, image: 'http://localhost:4000/uploads/' + item.image }; // sebelum intergrasi ganti link nya
+      return {
+        ...item,
+        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
+      }; // sebelum intergrasi ganti link nya
     });
 
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        layanan:
-          allLayanans
-      }
+        layanan: allLayanans,
+      },
     });
-
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=Get Layanan by id=\\
 exports.getService = async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
     let service = await Layanan.findOne({
       where: {
-        id: id
+        id: id,
       },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     service = JSON.parse(JSON.stringify(service));
     service = {
-      ...service, image: 'http://localhost:4000/uploads/' + service.image // sebelum intergrasi ganti link nya
+      ...service,
+      image: "https://be-compro.herokuapp.com/uploads/" + service.image, // sebelum intergrasi ganti link nya
     };
 
     if (!service) {
       return res.status(404).send({
-        status: 'Failed',
-        message: 'Layanan not Found'
+        status: "Failed",
+        message: "Layanan not Found",
       });
-    };
+    }
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        service
-      }
+        service,
+      },
     });
-
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=Get Layanan by Category=\\
@@ -75,35 +76,37 @@ exports.getServiceCategory = async (req, res) => {
     const { category } = req.params;
     let services = await Layanan.findAll({
       where: {
-        category: category
+        category: category,
       },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
     if (!services) {
       return res.status(404).send({
-        status: 'Failed',
-        message: 'Layanan not Found'
+        status: "Failed",
+        message: "Layanan not Found",
       });
-    };
+    }
     services = JSON.parse(JSON.stringify(services));
     services = services?.map((item) => {
-      return { ...item, image: 'http://localhost:4000/uploads/' + item.image }; // sebelum intergrasi ganti link nya
+      return {
+        ...item,
+        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
+      }; // sebelum intergrasi ganti link nya
     });
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        services
-      }
+        services,
+      },
     });
-
   } catch (error) {
     res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=add Layanan=\\ TOKEN
@@ -114,23 +117,22 @@ exports.addService = async (req, res) => {
     if (req.file) {
       await Layanan.create({
         ...data,
-        image: req.file.filename
+        image: req.file.filename,
       });
     }
 
     res.status(201).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        service: { ...data, image: req.file.filename }
-      }
+        service: { ...data, image: req.file.filename },
+      },
     });
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=edit Layanan=\\ TOKEN
@@ -139,53 +141,51 @@ exports.editService = async (req, res) => {
     const { id } = req.params;
     const { body } = req;
     let serviceCheck = await Layanan.findOne({
-      where: { id }
+      where: { id },
     });
 
     if (!serviceCheck) {
       return res.status(404).send({
-        status: 'Failed',
-        message: `Layanan with id ${id} not Found`
+        status: "Failed",
+        message: `Layanan with id ${id} not Found`,
       });
-    };
+    }
     const dataUpdate = {
       ...body,
-      image: req.file.filename
+      image: req.file.filename,
     };
-    await Layanan.update(dataUpdate,
-      {
-        where: {
-          id
-        },
-      });
+    await Layanan.update(dataUpdate, {
+      where: {
+        id,
+      },
+    });
     const serviceUpdate = await Layanan.findOne({
       attributes: {
-        exclude: except
+        exclude: except,
       },
       where: {
-        id
-      }
+        id,
+      },
     });
 
     res.status(201).send({
-      status: 'Success',
+      status: "Success",
       data: {
         service: {
           id: serviceUpdate.id,
           image: serviceUpdate.image,
           title: serviceUpdate.title,
           description: serviceUpdate.description,
-          category: serviceUpdate.category
-        }
-      }
+          category: serviceUpdate.category,
+        },
+      },
     });
-
   } catch (error) {
     return res.status(500).send({
-      status: 'Failed',
-      message: 'Internal Server Error'
+      status: "Failed",
+      message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=delete Layanan=\\ TOKEN
@@ -195,30 +195,30 @@ exports.deleteService = async (req, res) => {
     const product = await Layanan.findOne({
       where: { id },
       attributes: {
-        exclude: except
-      }
+        exclude: except,
+      },
     });
 
     if (!product) {
       return res.status(404).send({
-        status: 'Failed',
+        status: "Failed",
         messgae: `Layanan with id ${id} not Found`,
-        data: []
+        data: [],
       });
     }
-    await Layanan.destroy({ where: { id } })
+    await Layanan.destroy({ where: { id } });
 
     res.status(200).send({
-      status: 'Success',
+      status: "Success",
       data: {
-        id
-      }
+        id,
+      },
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).send({
-      status: 'Failed',
-      messgae: 'Internal Server Error'
+      status: "Failed",
+      messgae: "Internal Server Error",
     });
-  };
+  }
 };

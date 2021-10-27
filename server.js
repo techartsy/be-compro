@@ -8,8 +8,8 @@ const port = process.env.PORT || 4000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use("/app/v1/techartsy", router);
 app.use("/uploads", express.static("uploads"));
+app.use("/app/v1/techartsy", router);
 app.get("/", (err, res) => {
   res.send("Server Run");
 });

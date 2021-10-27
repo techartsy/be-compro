@@ -43,7 +43,7 @@ exports.portofolios = async (req, res) => {
 exports.portofolioId = async (req, res) => {
   try {
     const { id } = req.params;
-    let portofolios = await Portofolio.findOne({
+    let portofolio = await Portofolio.findOne({
       where: {
         id: id,
       },
@@ -51,30 +51,30 @@ exports.portofolioId = async (req, res) => {
         exclude: except,
       },
     });
-    portofolios = JSON.parse(JSON.stringify(portofolios));
-    portofolios = {
-      ...portofolios,
-      mainimage: item.mainimage
-        ? "https://be-compro.herokuapp.com/uploads/" + item.mainimage
-        : item.mainimage,
-      secondimage: item.secondimage
-        ? "https://be-compro.herokuapp.com/uploads/" + item.secondimage
-        : item.secondimage,
-      thumbnail: item.thumbnail
-        ? "https://be-compro.herokuapp.com/uploads/" + item.thumbnail
-        : item.thumbnail,
-    };
-
-    if (!portofolios) {
+    if (!portofolio) {
       return res.status(404).send({
         status: "Failed",
         message: `Portofolio with id ${id} in Table not Found`,
       });
     }
+    // portofolio = JSON.parse(JSON.stringify(portofolio));
+    portofolio = {
+      ...portofolio,
+      mainimage: portofolio.mainimage
+        ? "https://be-compro.herokuapp.com/uploads/" + portofolio.mainimage
+        : portofolio.mainimage,
+      secondimage: portofolio.secondimage
+        ? "https://be-compro.herokuapp.com/uploads/" + portofolio.secondimage
+        : portofolio.secondimage,
+      thumbnail: portofolio.thumbnail
+        ? "https://be-compro.herokuapp.com/uploads/" + portofolio.thumbnail
+        : portofolio.thumbnail,
+    };
+
     res.status(200).send({
       status: "Success",
       data: {
-        portofolios,
+        portofolio,
       },
     });
   } catch (error) {

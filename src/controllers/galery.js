@@ -46,7 +46,7 @@ exports.galleryId = async (req, res) => {
     galleries = JSON.parse(JSON.stringify(galleries));
     galleries = {
       ...galleries,
-      image: "https://be-compro.herokuapp.com/uploads/" + galleries.image, // sebelum intergrasi ganti link nya
+      image: "https://be-compro.herokuapp.com/uploads/" + galleries.image,
     };
 
     if (!galleries) {
@@ -231,5 +231,5 @@ exports.deleteGallery = async (req, res) => {
       status: "Failed",
       message: "Internal Server Error",
     });
-  }
+  };
 };

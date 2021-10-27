@@ -14,9 +14,8 @@ exports.portofolios = async (req, res) => {
       return {
         ...item,
         mainimage: "https://be-compro.herokuapp.com/uploads/" + item.mainimage,
-        secondimage:
-          "https://be-compro.herokuapp.com/uploads/" + item.secondimage,
-        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
+        secondimage: "https://be-compro.herokuapp.com/uploads/" + item.secondimage,
+        thumbnail: "https://be-compro.herokuapp.com/uploads/" + item.image,
       };
     });
 
@@ -49,11 +48,9 @@ exports.portofolioId = async (req, res) => {
     portofolios = JSON.parse(JSON.stringify(portofolios));
     portofolios = {
       ...portofolios,
-      mainimage:
-        "https://be-compro.herokuapp.com/uploads/" + portofolios.mainimage, // sebelum intergrasi ganti link nya
-      secondimage:
-        "https://be-compro.herokuapp.com/uploads/" + portofolios.secondimage, // sebelum intergrasi ganti link nya
-      image: "https://be-compro.herokuapp.com/uploads/" + portofolios.image, // sebelum intergrasi ganti link nya
+      mainimage: "https://be-compro.herokuapp.com/uploads/" + portofolios.mainimage,
+      secondimage: "https://be-compro.herokuapp.com/uploads/" + portofolios.secondimage,
+      thumbnail: "https://be-compro.herokuapp.com/uploads/" + portofolios.image,
     };
 
     if (!portofolios) {
@@ -94,7 +91,7 @@ exports.categoryPortofolio = async (req, res) => {
         ...item,
         mainimage: "https://be-compro.herokuapp.com/uploads/" + item.image,
         secondimage: "https://be-compro.herokuapp.com/uploads/" + item.image,
-        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
+        thumbnail: "https://be-compro.herokuapp.com/uploads/" + item.image,
       };
     });
 

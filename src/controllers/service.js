@@ -219,5 +219,5 @@ exports.deleteService = async (req, res) => {
       status: "Failed",
       messgae: "Internal Server Error",
     });
-  }
+  };
 };

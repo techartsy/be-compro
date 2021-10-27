@@ -194,7 +194,9 @@ exports.editPortofolio = async (req, res) => {
         message: `Portofolio with id ${id} not Found`,
       });
     }
-    let dataUpdate;
+    let dataUpdate = {
+      ...body,
+    };
     if (req.files) {
       req.files.map((item) => {
         dataUpdate = {

@@ -16,4 +16,3 @@ app.get("/", (err, res) => {
 });
 
 app.listen(port, () => console.log(`Server Starts on ${port}!`));
-s;

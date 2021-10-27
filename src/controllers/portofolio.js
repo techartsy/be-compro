@@ -13,9 +13,15 @@ exports.portofolios = async (req, res) => {
     allPortofolios = allPortofolios?.map((item) => {
       return {
         ...item,
-        mainimage: "https://be-compro.herokuapp.com/uploads/" + item.mainimage,
-        secondimage: "https://be-compro.herokuapp.com/uploads/" + item.secondimage,
-        thumbnail: "https://be-compro.herokuapp.com/uploads/" + item.image,
+        mainimage: item.mainimage
+          ? "https://be-compro.herokuapp.com/uploads/" + item.mainimage
+          : item.mainimage,
+        secondimage: item.secondimage
+          ? "https://be-compro.herokuapp.com/uploads/" + item.secondimage
+          : item.secondimage,
+        thumbnail: item.thumbnail
+          ? "https://be-compro.herokuapp.com/uploads/" + item.thumbnail
+          : item.thumbnail,
       };
     });
 
@@ -48,9 +54,15 @@ exports.portofolioId = async (req, res) => {
     portofolios = JSON.parse(JSON.stringify(portofolios));
     portofolios = {
       ...portofolios,
-      mainimage: "https://be-compro.herokuapp.com/uploads/" + portofolios.mainimage,
-      secondimage: "https://be-compro.herokuapp.com/uploads/" + portofolios.secondimage,
-      thumbnail: "https://be-compro.herokuapp.com/uploads/" + portofolios.image,
+      mainimage: item.mainimage
+        ? "https://be-compro.herokuapp.com/uploads/" + item.mainimage
+        : item.mainimage,
+      secondimage: item.secondimage
+        ? "https://be-compro.herokuapp.com/uploads/" + item.secondimage
+        : item.secondimage,
+      thumbnail: item.thumbnail
+        ? "https://be-compro.herokuapp.com/uploads/" + item.thumbnail
+        : item.thumbnail,
     };
 
     if (!portofolios) {
@@ -89,9 +101,15 @@ exports.categoryPortofolio = async (req, res) => {
     portofolios = portofolios?.map((item) => {
       return {
         ...item,
-        mainimage: "https://be-compro.herokuapp.com/uploads/" + item.image,
-        secondimage: "https://be-compro.herokuapp.com/uploads/" + item.image,
-        thumbnail: "https://be-compro.herokuapp.com/uploads/" + item.image,
+        mainimage: item.mainimage
+          ? "https://be-compro.herokuapp.com/uploads/" + item.mainimage
+          : item.mainimage,
+        secondimage: item.secondimage
+          ? "https://be-compro.herokuapp.com/uploads/" + item.secondimage
+          : item.secondimage,
+        thumbnail: item.thumbnail
+          ? "https://be-compro.herokuapp.com/uploads/" + item.thumbnail
+          : item.thumbnail,
       };
     });
 
@@ -122,23 +140,36 @@ exports.addPortofolio = async (req, res) => {
     let portofolio = {
       ...data,
     };
+    let withFiles;
+
     req?.files &&
       req.files.map((item) => {
-        portofolio = {
+        withFiles = {
           ...portofolio,
           [item.fieldname]: item.filename,
         };
       });
-    await Portofolio.create(portofolio);
-
-    res.status(201).send({
-      status: "Success",
-      data: {
-        portofolio: {
-          ...portofolio,
+    if (req.files) {
+      await Portofolio.create(withFiles);
+      res.status(201).send({
+        status: "Success",
+        data: {
+          portofolio: {
+            ...withFiles,
+          },
         },
-      },
-    });
+      });
+    } else {
+      await Portofolio.create(portofolio);
+      res.status(201).send({
+        status: "Success",
+        data: {
+          portofolio: {
+            ...portofolio,
+          },
+        },
+      });
+    }
   } catch (error) {
     return res.status(500).send({
       status: "Failed",
@@ -162,16 +193,19 @@ exports.editPortofolio = async (req, res) => {
         message: `Portofolio with id ${id} not Found`,
       });
     }
-    dataUpdate = {
-      ...body,
-      image: req.files,
-    };
-    req.files.map((item) => {
+    let dataUpdate;
+    if (req.files) {
+      req.files.map((item) => {
+        dataUpdate = {
+          ...dataUpdate,
+          [item.fieldname]: item.filename,
+        };
+      });
+    } else {
       dataUpdate = {
-        ...dataUpdate,
-        [item.fieldname]: item.filename,
+        ...body,
       };
-    });
+    }
 
     await Portofolio.update(dataUpdate, {
       where: {
@@ -191,12 +225,21 @@ exports.editPortofolio = async (req, res) => {
       status: "Success",
       portofolio: {
         id: portofolioUpdate.id,
-        mainimage: portofolioUpdate.mainimage,
-        secondimage: portofolioUpdate.secondimage,
+        mainimage: portofolioUpdate.mainimage
+          ? "https://be-compro.herokuapp.com/uploads/" +
+            portofolioUpdate.mainimage
+          : portofolioUpdate.mainimage,
+        secondimage: portofolioUpdate.secondimage
+          ? "https://be-compro.herokuapp.com/uploads/" +
+            portofolioUpdate.secondimage
+          : portofolioUpdate.secondimage,
         title: portofolioUpdate.title,
         description: portofolioUpdate.description,
         category: portofolioUpdate.category,
-        thumbnail: portofolioUpdate.thumbnail,
+        thumbnail: portofolioUpdate.thumbnail
+          ? "https://be-compro.herokuapp.com/uploads/" +
+            portofolioUpdate.thumbnail
+          : portofolioUpdate.thumbnail,
       },
     });
   } catch (error) {

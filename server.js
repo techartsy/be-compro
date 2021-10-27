@@ -15,7 +15,7 @@ app.use(cors());
 // process.env.PWD = process.cwd();
 // app.use(express.static(path.join(process.env.PWD, "public")));
 // app.use('/static', express.static(__dirname + '/public'));
-app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "../public"));
 app.use("/app/v1/techartsy", router);
 app.get("/", (err, res) => {
   res.send("Server Run");

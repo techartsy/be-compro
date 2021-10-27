@@ -18,7 +18,8 @@
     "password": "3376bea9c09861793eaa6e13871bc97b664d94859e492530985f9dc2b6502d57",
     "database": "daiogb3f4kqird",
     "host": "ec2-176-34-116-203.eu-west-1.compute.amazonaws.com",
+    "dialect": "postgres",
     "operatorsAliases": false,
-    "dialect": "postgres"
+    "use_env_variable": "DATABASE_URL"
   }
 }

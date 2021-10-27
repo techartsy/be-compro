@@ -147,7 +147,7 @@ exports.addPortofolio = async (req, res) => {
     if (req.files) {
       req.files.map((item) => {
         withFiles = {
-          ...data,
+          ...withFiles,
           [item.fieldname]: item.filename,
         };
       });

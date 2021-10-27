@@ -3,7 +3,7 @@ const multer = require("multer");
 exports.uploadFile = (imageFile, categoryFile) => {
   const storage = multer.diskStorage({
     destination: function (req, res, cb) {
-      cb(null, "uploads");
+      cb(null, __dirname + "/uploads");
     },
     filename: function (req, file, cb) {
       cb(null, `${Date.now()}-${file.originalname.replace(/\s/g, "")}`);

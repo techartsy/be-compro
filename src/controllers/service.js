@@ -152,7 +152,7 @@ exports.editService = async (req, res) => {
       });
     }
     const dataUpdate;
-    if (req?.file) {
+    if (req.file) {
       dataUpdate = {
         ...body,
         image: req.file.filename,

@@ -150,7 +150,7 @@ exports.editService = async (req, res) => {
         message: `Layanan with id ${id} not Found`,
       });
     }
-    const dataUpdate;
+    let dataUpdate;
     if (req?.file) {
       dataUpdate = {
         ...body,

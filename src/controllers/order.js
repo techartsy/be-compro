@@ -104,7 +104,11 @@ exports.sendEmail = (email) => {
     attachments: [
       {
         filename: "QuotationWebDevelopmentTechartsy.pdf",
-        path: "./assets/QuotationWebDevelopmentTechartsy.pdf",
+        path: "./assets/QuotationWebDevelopmentTechartsy.pdf"
+      },
+      {
+        filename: "QuotationCreativeProductionTechartsy.pdf",
+        path: "./assets/QuotationCreativeProductionTechartsy.pdf"
       },
     ],
   };

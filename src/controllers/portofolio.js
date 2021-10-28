@@ -82,7 +82,7 @@ exports.portofolioId = async (req, res) => {
       status: "Failed",
       message: "Internal Server Error",
     });
-  }
+  };
 };
 
 //=Get Portofolio by category=\\
@@ -230,18 +230,18 @@ exports.editPortofolio = async (req, res) => {
         id: portofolioUpdate.id,
         mainimage: portofolioUpdate.mainimage
           ? "https://be-compro.herokuapp.com/uploads/" +
-            portofolioUpdate.mainimage
+          portofolioUpdate.mainimage
           : portofolioUpdate.mainimage,
         secondimage: portofolioUpdate.secondimage
           ? "https://be-compro.herokuapp.com/uploads/" +
-            portofolioUpdate.secondimage
+          portofolioUpdate.secondimage
           : portofolioUpdate.secondimage,
         title: portofolioUpdate.title,
         description: portofolioUpdate.description,
         category: portofolioUpdate.category,
         thumbnail: portofolioUpdate.thumbnail
           ? "https://be-compro.herokuapp.com/uploads/" +
-            portofolioUpdate.thumbnail
+          portofolioUpdate.thumbnail
           : portofolioUpdate.thumbnail,
       },
     });

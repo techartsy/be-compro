@@ -112,7 +112,7 @@ exports.galleryCategory = async (req, res) => {
       status: "Failed",
       message: "Internal Server Error",
     });
-  }
+  };
 };
 
 //=add Gallery=\\
@@ -140,13 +140,13 @@ exports.addItemGallery = async (req, res) => {
           gallery: { ...data },
         },
       });
-    }
+    };
   } catch (error) {
     return res.status(500).send({
       status: "Failed",
       message: "Internal Server Error",
     });
-  }
+  };
 };
 
 //=edit Gallery=\\ TOKEN

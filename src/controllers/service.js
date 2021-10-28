@@ -1,7 +1,6 @@
 const e = require("express");
 const { Layanan } = require("../../models");
 const except = ["createdAt", "updatedAt"];
-// const joi = require('joi');
 
 //=Get All Layanans=\\
 exports.services = async (req, res) => {
@@ -152,7 +151,7 @@ exports.editService = async (req, res) => {
       });
     }
     let dataUpdate;
-    if (req.file) {
+    if (req?.file) {
       dataUpdate = {
         ...body,
         image: req.file.filename,

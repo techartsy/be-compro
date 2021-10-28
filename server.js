@@ -5,7 +5,7 @@ const app = express();
 const router = require("./src/routes");
 const port = process.env.PORT || 4000;
 var path = require("path");
-// test PR
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());

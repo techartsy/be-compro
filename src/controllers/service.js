@@ -1,7 +1,6 @@
 const e = require("express");
 const { Layanan } = require("../../models");
 const except = ["createdAt", "updatedAt"];
-// const joi = require('joi');
 
 //=Get All Layanans=\\
 exports.services = async (req, res) => {

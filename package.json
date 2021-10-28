@@ -20,9 +20,14 @@
     "mysql2": "^2.3.0",
     "nodemailer": "^6.7.0",
     "nodemon": "^2.0.13",
+    "path": "^0.12.7",
     "pg": "^8.3.0",
     "sequelize": "^6.6.5",
     "sequelize-cli": "^6.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "engines": {
+    "node": "14.15.0",
+    "npm": "6.14.8"
+  }
 }

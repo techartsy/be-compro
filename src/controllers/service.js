@@ -1,6 +1,7 @@
 const e = require("express");
 const { Layanan } = require("../../models");
 const except = ["createdAt", "updatedAt"];
+const cloudinary = require("../middlewares/cloudinary");
 
 //=Get All Layanans=\\
 exports.services = async (req, res) => {
@@ -9,13 +10,6 @@ exports.services = async (req, res) => {
       attributes: {
         exclude: except,
       },
-    });
-    allLayanans = JSON.parse(JSON.stringify(allLayanans));
-    allLayanans = allLayanans?.map((item) => {
-      return {
-        ...item,
-        image: "https://be-compro.herokuapp.com/public/" + item.image,
-      }; // sebelum intergrasi ganti link nya
     });
 
     res.status(200).send({
@@ -44,11 +38,6 @@ exports.getService = async (req, res) => {
         exclude: except,
       },
     });
-    service = JSON.parse(JSON.stringify(service));
-    service = {
-      ...service,
-      image: "https://be-compro.herokuapp.com/public/" + service.image, // sebelum intergrasi ganti link nya
-    };
 
     if (!service) {
       return res.status(404).send({
@@ -88,13 +77,6 @@ exports.getServiceCategory = async (req, res) => {
         message: "Layanan not Found",
       });
     }
-    services = JSON.parse(JSON.stringify(services));
-    services = services?.map((item) => {
-      return {
-        ...item,
-        image: "https://be-compro.herokuapp.com/uploads/" + item.image,
-      }; // sebelum intergrasi ganti link nya
-    });
     res.status(200).send({
       status: "Success",
       data: {
@@ -113,20 +95,31 @@ exports.getServiceCategory = async (req, res) => {
 exports.addService = async (req, res) => {
   try {
     let data = req.body;
-
     if (req.file) {
+      const uploadedFile = await cloudinary.uploader.upload(req.file.path);
+      if (uploadedFile) {
+        await Layanan.create({
+          ...data,
+          image: uploadedFile.secure_url,
+        });
+        res.status(201).send({
+          status: "Success",
+          data: {
+            service: { ...data, image: uploadedFile.secure_url },
+          },
+        });
+      }
+    } else {
       await Layanan.create({
         ...data,
-        image: req.file.filename,
+      });
+      res.status(201).send({
+        status: "Success",
+        data: {
+          service: { ...data },
+        },
       });
     }
-
-    res.status(201).send({
-      status: "Success",
-      data: {
-        service: { ...data, image: req.file.filename },
-      },
-    });
   } catch (error) {
     return res.status(500).send({
       status: "Failed",
@@ -152,9 +145,10 @@ exports.editService = async (req, res) => {
     }
     let dataUpdate;
     if (req?.file) {
+      const uploadedFile = await cloudinary.uploader.upload(req.file.path);
       dataUpdate = {
         ...body,
-        image: req.file.filename,
+        image: uploadedFile.secure_url,
       };
     } else {
       dataUpdate = {
@@ -180,9 +174,7 @@ exports.editService = async (req, res) => {
       data: {
         service: {
           id: serviceUpdate.id,
-          image: serviceUpdate.image
-            ? "https://be-compro.herokuapp.com/uploads/" + serviceUpdate.image
-            : serviceUpdate.image,
+          image: serviceUpdate.image,
           title: serviceUpdate.title,
           description: serviceUpdate.description,
           category: serviceUpdate.category,

@@ -87,20 +87,29 @@ exports.addOrder = async (req, res) => {
 };
 
 //=send email=\\
-exports.sendEmail = (email) => {
+exports.sendEmail = (email, name, message) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "techartsy.indonesia@gmail.com",
-      pass: "lintingdewe",
+      user: "hello.techartsy.indonesia@gmail.com",
+      pass: "support.Techartsy21",
     },
   });
 
   let mailOptions = {
-    from: "techartsy.indonesia@gmail.com",
+    from: "hello.techartsy.indonesia@gmail.com",
     to: email,
-    subject: "email has been delivered",
-    text: "email from back end",
+    subject: "We have received your email",
+    text:
+      `Hello ${name}..
+    Thank you for contacting Techartsy Indonesia.
+    We attached our quotation for our details services below.
+    We look forward to hearing your response.
+    Regards Techartsy Indonesia.
+    
+    
+    Your Message : 
+    ${message}`,
     attachments: [
       {
         filename: "QuotationWebDevelopmentTechartsy.pdf",
@@ -145,7 +154,7 @@ exports.responseOrder = async (req, res) => {
     });
 
     if (body.status.toLowerCase() === "confirm") {
-      this.sendEmail(orderCheck.email);
+      this.sendEmail(orderCheck.email, orderCheck.name, orderCheck.message);
     }
 
     res.status(201).send({

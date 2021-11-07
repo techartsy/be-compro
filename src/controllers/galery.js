@@ -1,5 +1,6 @@
 const { Gallery } = require("../../models");
 const except = ["createdAt", "updatedAt"];
+const cloudinary = require("../middlewares/cloudinary");
 
 //=Get All Gallery=\\
 exports.galleries = async (req, res) => {
@@ -9,16 +10,6 @@ exports.galleries = async (req, res) => {
         exclude: except,
       },
     });
-    allItems = JSON.parse(JSON.stringify(allItems));
-    allItems = allItems.map((item) => {
-      return {
-        ...item,
-        image: item.image
-          ? "https://be-compro.herokuapp.com/uploads/" + item.image
-          : item.image,
-      };
-    });
-
     res.status(200).send({
       status: "Success",
       data: {
@@ -45,13 +36,6 @@ exports.galleryId = async (req, res) => {
         exclude: except,
       },
     });
-    galleries = JSON.parse(JSON.stringify(galleries));
-    galleries = {
-      ...galleries,
-      image: galleries.image
-        ? "https://be-compro.herokuapp.com/uploads/" + galleries.image
-        : galleries.image, // sebelum intergrasi ganti link nya
-    };
 
     if (!galleries) {
       return res.status(404).send({
@@ -85,16 +69,6 @@ exports.galleryCategory = async (req, res) => {
         exclude: except,
       },
     });
-    galleries = JSON.parse(JSON.stringify(galleries));
-    galleries = galleries?.map((item) => {
-      return {
-        ...item,
-        image: item.image
-          ? "https://be-compro.herokuapp.com/uploads/" + item.image
-          : item.image,
-      };
-    });
-
     if (!galleries) {
       return res.status(404).send({
         status: "Failed",
@@ -112,7 +86,7 @@ exports.galleryCategory = async (req, res) => {
       status: "Failed",
       message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=add Gallery=\\
@@ -120,16 +94,19 @@ exports.addItemGallery = async (req, res) => {
   try {
     let data = req.body;
     if (req.file) {
-      await Gallery.create({
-        ...data,
-        image: req.file.filename,
-      });
-      res.status(201).send({
-        status: "Success",
-        data: {
-          gallery: { ...data, image: req.file.filename },
-        },
-      });
+      const uploadedFile = await cloudinary.uploader.upload(req.file.path);
+      if (uploadedFile) {
+        await Gallery.create({
+          ...data,
+          image: uploadedFile.secure_url,
+        });
+        res.status(201).send({
+          status: "Success",
+          data: {
+            gallery: { ...data, image: uploadedFile.secure_url },
+          },
+        });
+      }
     } else {
       await Gallery.create({
         ...data,
@@ -140,13 +117,13 @@ exports.addItemGallery = async (req, res) => {
           gallery: { ...data },
         },
       });
-    };
+    }
   } catch (error) {
     return res.status(500).send({
       status: "Failed",
       message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=edit Gallery=\\ TOKEN
@@ -166,9 +143,10 @@ exports.editGallery = async (req, res) => {
     }
     let dataUpdate;
     if (req?.file) {
+      const uploadedFile = await cloudinary.uploader.upload(req.file.path);
       dataUpdate = {
         ...body,
-        image: req.file.filename,
+        image: uploadedFile.secure_url,
       };
     } else {
       dataUpdate = {

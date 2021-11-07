@@ -1,5 +1,6 @@
 const { Portofolio } = require("../../models/");
 const except = ["createdAt", "updatedAt"];
+const cloudinary = require("../middlewares/cloudinary");
 
 //=Get All Portofolio=\\
 exports.portofolios = async (req, res) => {
@@ -8,21 +9,6 @@ exports.portofolios = async (req, res) => {
       attributes: {
         exclude: except,
       },
-    });
-    allPortofolios = JSON.parse(JSON.stringify(allPortofolios));
-    allPortofolios = allPortofolios?.map((item) => {
-      return {
-        ...item,
-        mainimage: item.mainimage
-          ? "https://be-compro.herokuapp.com/uploads/" + item.mainimage
-          : item.mainimage,
-        secondimage: item.secondimage
-          ? "https://be-compro.herokuapp.com/uploads/" + item.secondimage
-          : item.secondimage,
-        thumbnail: item.thumbnail
-          ? "https://be-compro.herokuapp.com/uploads/" + item.thumbnail
-          : item.thumbnail,
-      };
     });
 
     res.status(200).send({
@@ -57,20 +43,6 @@ exports.portofolioId = async (req, res) => {
         message: `Portofolio with id ${id} in Table not Found`,
       });
     }
-    portofolio = JSON.parse(JSON.stringify(portofolio));
-    portofolio = {
-      ...portofolio,
-      mainimage: portofolio.mainimage
-        ? "https://be-compro.herokuapp.com/uploads/" + portofolio.mainimage
-        : portofolio.mainimage,
-      secondimage: portofolio.secondimage
-        ? "https://be-compro.herokuapp.com/uploads/" + portofolio.secondimage
-        : portofolio.secondimage,
-      thumbnail: portofolio.thumbnail
-        ? "https://be-compro.herokuapp.com/uploads/" + portofolio.thumbnail
-        : portofolio.thumbnail,
-    };
-
     res.status(200).send({
       status: "Success",
       data: {
@@ -82,7 +54,7 @@ exports.portofolioId = async (req, res) => {
       status: "Failed",
       message: "Internal Server Error",
     });
-  };
+  }
 };
 
 //=Get Portofolio by category=\\
@@ -97,22 +69,6 @@ exports.categoryPortofolio = async (req, res) => {
         exclude: except,
       },
     });
-    portofolios = JSON.parse(JSON.stringify(portofolios));
-    portofolios = portofolios?.map((item) => {
-      return {
-        ...item,
-        mainimage: item.mainimage
-          ? "https://be-compro.herokuapp.com/uploads/" + item.mainimage
-          : item.mainimage,
-        secondimage: item.secondimage
-          ? "https://be-compro.herokuapp.com/uploads/" + item.secondimage
-          : item.secondimage,
-        thumbnail: item.thumbnail
-          ? "https://be-compro.herokuapp.com/uploads/" + item.thumbnail
-          : item.thumbnail,
-      };
-    });
-
     if (!portofolios) {
       return res.status(404).send({
         status: "Failed",
@@ -145,21 +101,25 @@ exports.addPortofolio = async (req, res) => {
     };
 
     if (req.files) {
-      req.files.map((item) => {
+      for (const item of req.files) {
+        const { path } = item;
+        const newPath = await cloudinary.uploader.upload(path);
         withFiles = {
           ...withFiles,
-          [item.fieldname]: item.filename,
+          [item.fieldname]: newPath.secure_url,
         };
-      });
-      await Portofolio.create(withFiles);
-      res.status(201).send({
-        status: "Success",
-        data: {
-          portofolio: {
-            ...withFiles,
+      }
+      if (withFiles.thumbnail && withFiles.mainimage && withFiles.secondimage) {
+        await Portofolio.create(withFiles);
+        res.status(201).send({
+          status: "Success",
+          data: {
+            portofolio: {
+              ...withFiles,
+            },
           },
-        },
-      });
+        });
+      }
     } else {
       await Portofolio.create(portofolio);
       res.status(201).send({
@@ -198,18 +158,19 @@ exports.editPortofolio = async (req, res) => {
       ...body,
     };
     if (req.files) {
-      req.files.map((item) => {
+      for (const item of req.files) {
+        const { path } = item;
+        const newPath = await cloudinary.uploader.upload(path);
         dataUpdate = {
           ...dataUpdate,
-          [item.fieldname]: item.filename,
+          [item.fieldname]: newPath.secure_url,
         };
-      });
+      }
     } else {
       dataUpdate = {
         ...body,
       };
     }
-
     await Portofolio.update(dataUpdate, {
       where: {
         id,
@@ -228,21 +189,12 @@ exports.editPortofolio = async (req, res) => {
       status: "Success",
       portofolio: {
         id: portofolioUpdate.id,
-        mainimage: portofolioUpdate.mainimage
-          ? "https://be-compro.herokuapp.com/uploads/" +
-          portofolioUpdate.mainimage
-          : portofolioUpdate.mainimage,
-        secondimage: portofolioUpdate.secondimage
-          ? "https://be-compro.herokuapp.com/uploads/" +
-          portofolioUpdate.secondimage
-          : portofolioUpdate.secondimage,
+        mainimage: portofolioUpdate.mainimage,
+        secondimage: portofolioUpdate.secondimage,
         title: portofolioUpdate.title,
         description: portofolioUpdate.description,
         category: portofolioUpdate.category,
-        thumbnail: portofolioUpdate.thumbnail
-          ? "https://be-compro.herokuapp.com/uploads/" +
-          portofolioUpdate.thumbnail
-          : portofolioUpdate.thumbnail,
+        thumbnail: portofolioUpdate.thumbnail,
       },
     });
   } catch (error) {
